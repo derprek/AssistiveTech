@@ -100,6 +100,10 @@ return [
 
     'migrations' => 'migrations',
 
+    username: 'forge'
+    database: 'K8hRv9HAxogYMHyukuVa'
+    hostname: 'localhost'
+
     /*
     |--------------------------------------------------------------------------
     | Redis Databases
