@@ -36,6 +36,15 @@ class Article extends Model
     public function user()
     {
         return $this->belongsTo('App\User'); // form relation
-
     }
+
+    public function tags()
+    {
+    	return $this->belongsToMany('App\Tag')->withTimestamps();
+    }
+
+    public function getTagListAttribute()  //list if tags id ass with current article. return array
+    {
+    	return $this->tags->lists('id')->all();
+    } 
 }

@@ -9,6 +9,7 @@ use App\Http\Requests\ArticleRequest;
 use Auth;
 use App\Http\Requests;
 use Carbon\Carbon;
+use App\Tag;
 
 //use Request;
 
@@ -23,16 +24,19 @@ class ArticlesController extends Controller
     	return view('articles.index', compact ('articles'));
     }
 
-    public function show($id)
+    public function show(Article $article)
     {
-    	$article = Article::findOrFail($id);
+    	//dd($id);
+    	//$article = Article::findOrFail($id);
     	//dd($article);
     	return view('articles.show', compact('article'));
     }
 
     public function create()
     {
-    	return view('articles.create');
+    	$tags = Tag::lists('name', 'id');
+
+    	return view('articles.create', compact('tags'));
     }
 
     public function store(ArticleRequest $request) //create article method
@@ -42,28 +46,27 @@ class ArticlesController extends Controller
     	//Article::create($input);
 
     	//Article::create(Request::all());
-
-    	$article = new Article($request->all());
-
-    	Auth::user()->articles()->save($article);
+    	//dd($request->input('tags'));
+    	$article = Auth::user()->articles()->create($request->all());
+    	$article->tags()->attach($request->input('tag_list'));
 
     	return redirect('articles');
 
     }
 
-    public function edit($id)
+    public function edit(Article $article)
     {
-    	$article = Article::findOrFail($id);
-
-    	return view('articles.edit', compact('article'));
-
+    	$tags = Tag::lists('name', 'id');
+    	return view('articles.edit', compact('article', 'tags'));
     }
 
-    public function update($id, ArticleRequest $request)
+    public function update(Article $article, ArticleRequest $request)
     {
-    	$article = Article::findOrFail($id);
+    	//s$article = Article::findOrFail($id);
 
     	$article->update($request->all());
+
+    	$article->tags()->sync($request->input('tag_list'));
 
     	return redirect('articles');
     }
